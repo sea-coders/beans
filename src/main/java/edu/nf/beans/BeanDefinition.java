@@ -6,21 +6,21 @@ package edu.nf.beans;
 public class BeanDefinition {
 
     /**
-     * bean的作用域(创建方式)
+     * 默认单例
      */
-    private String scope;
+    private boolean singleton = true;
 
     /**
      * bean的Class
      */
     private Class<?> beanClass;
 
-    public String getScope() {
-        return scope;
+    public boolean isSingleton() {
+        return singleton;
     }
 
-    public void setScope(String scope) {
-        this.scope = scope;
+    public void setSingleton(boolean singleton) {
+        this.singleton = singleton;
     }
 
     public Class<?> getBeanClass() {

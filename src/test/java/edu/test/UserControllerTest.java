@@ -10,6 +10,10 @@ public class UserControllerTest {
     public void testAdd(){
         BeanFactory factory = new BeanFactory("edu.demo");
         UserController controller = factory.getBean("controller", UserController.class);
+        System.out.println(controller);
+        controller.add();
+        controller = factory.getBean("controller", UserController.class);
+        System.out.println(controller);
         controller.add();
 
     }

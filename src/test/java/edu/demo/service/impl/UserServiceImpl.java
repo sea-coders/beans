@@ -4,6 +4,7 @@ import edu.demo.dao.UserDao;
 import edu.demo.service.UserService;
 import edu.nf.beans.annotations.Component;
 import edu.nf.beans.annotations.Inject;
+import edu.nf.beans.annotations.Scope;
 
 @Component("service")
 public class UserServiceImpl implements UserService{
@@ -13,6 +14,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void add() {
+        System.out.println(this);
         dao.save();
     }
 }

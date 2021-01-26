@@ -16,12 +16,12 @@ public class BeanFactory {
     /**
      * 存放bean的描述
      */
-    final Map<String, BeanDefinition> definitionMap = new ConcurrentHashMap<>();
+    private final Map<String, BeanDefinition> definitionMap = new ConcurrentHashMap<>();
 
     /**
      * 存放单例bean的实例
      */
-    final Map<String, Object> singletonMap = new ConcurrentHashMap<>();
+    private final Map<String, Object> singletonCache = new ConcurrentHashMap<>();
 
     /**
      * 在构造方法中初始化并构建所有bean描述
@@ -58,8 +58,7 @@ public class BeanFactory {
                             "conflicts with existing, non-compatible bean definition of same name and class ["
                                     + beanClass + "]");
                 } else {
-                    definitionMap.put(beanName,
-                            createBeanDefinition(beanClass));
+                    definitionMap.put(beanName, createBeanDefinition(beanClass));
                 }
             }
         }
@@ -87,12 +86,14 @@ public class BeanFactory {
      * @param beanClass
      */
     private BeanDefinition createBeanDefinition(Class<?> beanClass) {
-        // 创建BeanDefinition
+        //创建BeanDefinition
         BeanDefinition definition = new BeanDefinition();
         //设置Bean的Class对象
         definition.setBeanClass(beanClass);
         //设置Bean的作用域
-        definition.setScope(resolveScope(beanClass));
+        if(!getBeanScope(beanClass)){
+            definition.setSingleton(false);
+        }
         return definition;
     }
 
@@ -100,10 +101,12 @@ public class BeanFactory {
      * 解析Scope，如果bean的class上指定了Scope注解,则将@Scope的value属性值作为Bean的创建方式
      * 否则Bean的默认创建方式将使用单例
      */
-    private String resolveScope(Class<?> beanClass) {
-        String scope = (beanClass.isAnnotationPresent(Scope.class)) ? beanClass
-                .getAnnotation(Scope.class).value() : "singleton";
-        return scope;
+    private boolean getBeanScope(Class<?> beanClass) {
+        if(!beanClass.isAnnotationPresent(Scope.class)){
+            return true;
+        }
+        String scope = beanClass.getAnnotation(Scope.class).value();
+        return "singleton".equals(scope);
     }
 
     /**
@@ -112,9 +115,9 @@ public class BeanFactory {
     private void initSingleton() {
         for (String beanName : definitionMap.keySet()) {
             BeanDefinition definition = definitionMap.get(beanName);
-            if ("singleton".equals(definition.getScope())) {
+            if (definition.isSingleton()) {
                 Object bean = newInstance(definition);
-                singletonMap.put(beanName, bean);
+                singletonCache.put(beanName, bean);
             }
         }
     }
@@ -123,9 +126,9 @@ public class BeanFactory {
      * 为所有singleton实例执行装配（依赖注入）
      */
     private void assemblySingletons() {
-        for (String beanName : singletonMap.keySet()) {
+        for (String beanName : singletonCache.keySet()) {
             Class<?> beanClass = definitionMap.get(beanName).getBeanClass();
-            Object bean = singletonMap.get(beanName);
+            Object bean = singletonCache.get(beanName);
             InjectHandlerContext.inject(bean, beanClass, this);
         }
     }
@@ -178,21 +181,21 @@ public class BeanFactory {
 
     /**
      * 从容器中获取Bean的BeanDefinition
-     * 如果Bean的BeanDefinition的scope为singleton,则从singletonMap中获取单例
+     * 如果Bean为singleton,则从singletonMap中获取单例
      * 否则以原型的方式创建并返回
      */
     private Object doGetBean(String beanName) {
-        BeanDefinition definition = definitionMap.get(beanName);
-        if("singleton".equals(definition.getScope())){
-            return singletonMap.get(beanName);
+        Object instance = singletonCache.get(beanName);
+        if(instance != null){
+            return instance;
         }
-        return assemblyPrototype(definition);
+        return assemblyPrototype(definitionMap.get(beanName));
     }
 
     public void close(){
         // 清空Bean描述集合
         definitionMap.clear();
         // 清空Bean实例集合
-        singletonMap.clear();
+        singletonCache.clear();
     }
 }
