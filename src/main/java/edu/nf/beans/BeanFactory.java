@@ -126,7 +126,7 @@ public class BeanFactory {
         for (String beanName : singletonMap.keySet()) {
             Class<?> beanClass = definitionMap.get(beanName).getBeanClass();
             Object bean = singletonMap.get(beanName);
-            InjectHandlerInvoker.inject(bean, beanClass, this);
+            InjectHandlerContext.inject(bean, beanClass, this);
         }
     }
 
@@ -135,7 +135,7 @@ public class BeanFactory {
      */
     protected Object assemblyPrototype(BeanDefinition definition){
         Object bean = newInstance(definition);
-        InjectHandlerInvoker.inject(bean, definition.getBeanClass(), this);
+        InjectHandlerContext.inject(bean, definition.getBeanClass(), this);
         return bean;
     }
 

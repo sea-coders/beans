@@ -13,7 +13,7 @@ import java.util.ServiceLoader;
  * 注入回调处理器
  * @author wangl
  */
-public class InjectHandlerInvoker {
+public class InjectHandlerContext {
 	
 	private static List<InjectHandler> handlers = new ArrayList<>();
 
