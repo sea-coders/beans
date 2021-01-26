@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 
 /**
  * Set方法注入器
+ * @author wangl
  */
 public class MethodInjectHandler implements InjectHandler {
 
@@ -20,6 +21,7 @@ public class MethodInjectHandler implements InjectHandler {
      * @param targetClass
      * @param factory
      */
+    @Override
     public void handle(Object target, Class<?> targetClass, BeanFactory factory) {
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(targetClass,

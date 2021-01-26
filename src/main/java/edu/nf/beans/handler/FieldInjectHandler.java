@@ -7,9 +7,11 @@ import java.lang.reflect.Field;
 
 /**
  * 字段注入器
+ * @author wangl
  */
 public class FieldInjectHandler implements InjectHandler {
 
+    @Override
     public void handle(Object target, Class<?> targetClass, BeanFactory factory) {
         // 遍历当前类中字段
         for (Field field : targetClass.getDeclaredFields()) {

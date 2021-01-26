@@ -1,4 +1,4 @@
-package edu.nf.beans.utils;
+package edu.nf.beans.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,9 +14,11 @@ import java.util.jar.JarFile;
 
 /**
  * class扫描工具
- * Created by wangl on 2017/7/6.
+ *
+ * @author wangl
+ * @date 2017/7/6
  */
-public class ScanUtil {
+public class ScanUtils {
 
 	private static final Set<String> classNames = new HashSet<String>();
 
@@ -93,11 +95,4 @@ public class ScanUtil {
 		}
 	}
 
-
-	public static void main(String[] args) {
-		Set<String> classNames = scan("edu.nf");
-		for (String className : classNames) {
-			System.out.println(className);
-		}
-	}
 }

@@ -2,13 +2,16 @@ package edu.nf.beans;
 
 import edu.nf.beans.annotations.Component;
 import edu.nf.beans.annotations.Scope;
-import edu.nf.beans.utils.BeanNameUtil;
-import edu.nf.beans.utils.ScanUtil;
+import edu.nf.beans.util.BeanNameUtils;
+import edu.nf.beans.util.ScanUtils;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author wangl
+ */
 public class BeanFactory {
     /**
      * 存放bean的描述
@@ -27,7 +30,7 @@ public class BeanFactory {
      * @param path 扫描路径
      */
     public BeanFactory(String path) {
-        Set<String> classNames = ScanUtil.scan(path);
+        Set<String> classNames = ScanUtils.scan(path);
         //初始化原型
         initDefinitionMap(classNames);
         //初始化单例
@@ -47,8 +50,8 @@ public class BeanFactory {
             if (beanClass.isAnnotationPresent(Component.class)) {
                 //获取@Component注解的value属性的值，这个值作为bean在容器的唯一标识
                 String beanName = beanClass.getAnnotation(Component.class).value();
-                //如果没有执行value，默认将类名作为beanName，并将类名首字母变为小写
-                beanName = "".equals(beanName) ? BeanNameUtil.toLowerBeanName(beanClass.getSimpleName()) : beanName;
+                //如果没有设置value，默认将类名作为beanName，并将类名首字母变为小写
+                beanName = "".equals(beanName) ? BeanNameUtils.toLowerBeanName(beanClass.getSimpleName()) : beanName;
                 //如果容器已经存在bean，则抛出异常
                 if (definitionMap.containsKey(beanName)) {
                     throw new RuntimeException(

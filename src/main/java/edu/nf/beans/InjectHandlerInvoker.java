@@ -11,6 +11,7 @@ import java.util.ServiceLoader;
 /**
  * 
  * 注入回调处理器
+ * @author wangl
  */
 public class InjectHandlerInvoker {
 	

@@ -1,5 +1,8 @@
 package edu.nf.beans;
 
+/**
+ * @author wangl
+ */
 public class BeanDefinition {
 
     /**
